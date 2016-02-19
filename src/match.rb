@@ -7,9 +7,13 @@ class Match
 
   def initialize(player_counts)
     suits = %w(c h s d) # (clubs, hearts, spades, diamonds)
-    card_set = ('2'..'9').to_a + %w(A K Q J T)
-    @cards = card_set.product(suits).map { |c, _s| c.to_s }
+    @card_set = %w(A K Q J) + ('2'..'10').to_a.reverse
+    @cards = @card_set.product(suits).map { |c, _s| c.to_s }
     @players = setup_players(player_counts)
+  end
+
+  def find_card_rank(card)
+    @card_set.find_index(card) + 1
   end
 
   private

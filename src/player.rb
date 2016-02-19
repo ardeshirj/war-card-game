@@ -1,4 +1,4 @@
-# The
+# Holds information about player's cards and id
 class Player
   attr_accessor :id
   attr_accessor :cards
