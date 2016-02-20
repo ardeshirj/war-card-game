@@ -9,7 +9,7 @@ class Player
   end
 
   def add_cards(cards)
-    @cards.push(cards)
+    @cards.unshift(*cards)
   end
 
   def play_battel

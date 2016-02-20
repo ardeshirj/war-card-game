@@ -16,6 +16,10 @@ class Match
     @card_set.find_index(card) + 1
   end
 
+  def find_player(player_id)
+    @players.find { |player| player.id == player_id }
+  end
+
   private
 
   def setup_players(player_counts)
