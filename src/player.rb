@@ -12,11 +12,8 @@ class Player
     @cards.unshift(*cards)
   end
 
-  def play_battel
-    @cards.pop
-  end
-
-  def play_war
-    @cards.pop(2)
+  def play_cards(n)
+    return @cards.pop unless n > 1
+    @cards.pop(n)
   end
 end
