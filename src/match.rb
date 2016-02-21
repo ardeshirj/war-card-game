@@ -11,34 +11,37 @@ class Match
     @card_set = ('2'..'10').to_a + %w(J Q K A)
     @cards = @card_set.product(suits).map { |c, _s| c.to_s }
     @players = setup_players(player_counts)
-    @played_cards = Hash.new { |hash, key| hash[key] = [] }
+    @pile = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def player_draw_card(count)
+  def players_draw_card(count)
     @players.each do |player|
       player_cards = player.play_cards(count)
+      # puts "player #{player.id}: #{player_cards}"
 
       player_cards.each do |player_card|
-        puts "player [#{player.id}]: #{player_card}"
-        @played_cards[player.id] << player_card
+        @pile[player.id] << player_card
       end
     end
   end
 
   def update_winner_cards
     cards_rank = find_cards_rank
+    puts "Ranks #{cards_rank}"
 
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
-    puts "player [#{winner_card[0]}] wins with rank: #{winner_card[1]}"
-
     winner = find_player(winner_card[0])
-    winner.add_cards(@played_cards.values)
+    winner.add_cards(@pile.values)
 
-    @played_cards.clear
+    puts "Winner: player-#{winner.id}"
+    # puts "Winner card: #{winner.cards}"
+    @pile.clear
   end
 
-  def war?(played_cards)
-    @played_cards.detect { |card| played_cards.count(card) > 1 }
+  def war?
+    @pile.values.detect do |card|
+      @pile.values.count(card) > 1
+    end
   end
 
   def over?
@@ -65,10 +68,8 @@ class Match
   def find_cards_rank
     cards_rank = {}
 
-    @played_cards.map do |player_id, cards|
-      cards.each do |card|
-        cards_rank[player_id] = @card_set.find_index(card) + 2
-      end
+    @pile.each do |player_id, cards|
+      cards_rank[player_id] = @card_set.find_index(cards.last) + 2
     end
 
     cards_rank
