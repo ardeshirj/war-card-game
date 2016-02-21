@@ -23,7 +23,7 @@ class Match
     end
   end
 
-  def find_battel_winner
+  def update_winner_cards
     cards_rank = {}
 
     @played_cards.map do |player_id, card|
@@ -33,11 +33,10 @@ class Match
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     puts "player [#{winner_card[0]}] wins with rank: #{winner_card[1]}"
 
-    find_player(winner_card[0])
-  end
+    winner = find_player(winner_card[0])
+    winner.add_cards(@played_cards.values)
 
-  def pile_cards
-    @played_cards.values
+    @played_cards.clear
   end
 
   def war?(played_cards)

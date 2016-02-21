@@ -7,11 +7,7 @@ until match.over?
   puts 'Match not over yet'
 
   match.battel
-  battel_winner = match.find_battel_winner
-
-  puts "Winner cards (before) #{battel_winner.cards}"
-  battel_winner.add_cards(match.pile_cards)
-  puts "winner cards (after) #{battel_winner.cards}"
+  match.update_winner_cards
 
   exit
 
