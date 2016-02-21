@@ -3,13 +3,20 @@ require_relative './player.rb'
 
 match = Match.new(2)
 
-players_cards = match.battel
-p match.war?(players_cards.values)
+until match.over?
+  puts 'Match not over yet'
 
-winner_card = zone.min_by { |_player_id, card_rank| card_rank }
-puts "player [#{winner_card[0]}] wins with rank: #{winner_card[1]}"
+  match.battel
+  battel_winner = match.find_battel_winner
 
-winner = match.find_player(winner_card[0])
-puts "Winner cards #{winner.cards}"
-winner.add_cards(played_cards)
-puts "winner cards #{winner.cards}"
+  puts "Winner cards (before) #{battel_winner.cards}"
+  battel_winner.add_cards(match.pile_cards)
+  puts "winner cards (after) #{battel_winner.cards}"
+
+  exit
+
+  # while !match.war?(players_cards.values)
+  #   puts 'We are in the war'
+  #   break
+  # end
+end
