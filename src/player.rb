@@ -12,7 +12,7 @@ class Player
     @cards.unshift(*cards)
   end
 
-  def play_cards(n)
+  def draw_cards(n)
     @cards.pop(n)
   end
 end

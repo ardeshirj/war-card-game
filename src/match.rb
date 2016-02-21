@@ -5,18 +5,19 @@ class Match
   attr_accessor :cards
   attr_accessor :players
 
-  def initialize(player_counts)
+  def initialize(player_count)
     suits = %w(c h s d) # (clubs, hearts, spades, diamonds)
     # [2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A]
     @card_set = ('2'..'10').to_a + %w(J Q K A)
     @cards = @card_set.product(suits).map { |c, _s| c.to_s }
-    @players = setup_players(player_counts)
+    @players = setup_players(player_count)
     @pile = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def players_draw_cards(count)
+  def players_draw_cards(card_count)
     @players.each do |player|
-      player_cards = player.play_cards(count)
+      player_cards = player.draw_cards(card_count)
+
       puts "player #{player.id}: #{player_cards}"
 
       player_cards.each do |player_card|
@@ -31,7 +32,7 @@ class Match
 
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     winner = find_player(winner_card[0])
-    winner.add_cards(@pile.values.flatten!)
+    winner.add_cards(@pile.values.flatten)
 
     puts "Winner: player-#{winner.id}"
     puts "Winner card: #{winner.cards}"
