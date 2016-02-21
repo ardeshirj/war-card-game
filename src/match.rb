@@ -14,10 +14,10 @@ class Match
     @pile = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def players_draw_card(count)
+  def players_draw_cards(count)
     @players.each do |player|
       player_cards = player.play_cards(count)
-      # puts "player #{player.id}: #{player_cards}"
+      puts "player #{player.id}: #{player_cards}"
 
       player_cards.each do |player_card|
         @pile[player.id] << player_card
@@ -31,11 +31,17 @@ class Match
 
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     winner = find_player(winner_card[0])
-    winner.add_cards(@pile.values)
+    winner.add_cards(@pile.values.flatten!)
 
     puts "Winner: player-#{winner.id}"
-    # puts "Winner card: #{winner.cards}"
+    puts "Winner card: #{winner.cards}"
     @pile.clear
+  end
+
+  def status
+    @players.each do |player|
+      puts "Player[#{player.id}]: #{player.cards.size} cards"
+    end
   end
 
   def war?
@@ -51,7 +57,6 @@ class Match
   private
 
   def setup_players(player_counts)
-    @players = []
     game_cards = cards.shuffle
     cards_count = game_cards.size
 
