@@ -13,7 +13,6 @@ class Player
   end
 
   def play_cards(n)
-    return @cards.pop unless n > 1
     @cards.pop(n)
   end
 end

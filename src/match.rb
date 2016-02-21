@@ -11,24 +11,22 @@ class Match
     @card_set = ('2'..'10').to_a + %w(J Q K A)
     @cards = @card_set.product(suits).map { |c, _s| c.to_s }
     @players = setup_players(player_counts)
-    @played_cards = {}
+    @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
 
-  def battel
+  def player_draw_card(count)
     @players.each do |player|
-      player_card = player.play_cards(1)
+      player_cards = player.play_cards(count)
 
-      puts "player [#{player.id}]: #{player_card}"
-      @played_cards[player.id] = player_card
+      player_cards.each do |player_card|
+        puts "player [#{player.id}]: #{player_card}"
+        @played_cards[player.id] << player_card
+      end
     end
   end
 
   def update_winner_cards
-    cards_rank = {}
-
-    @played_cards.map do |player_id, card|
-      cards_rank[player_id] = @card_set.find_index(card) + 2
-    end
+    cards_rank = find_cards_rank
 
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     puts "player [#{winner_card[0]}] wins with rank: #{winner_card[1]}"
@@ -62,5 +60,17 @@ class Match
 
   def find_player(player_id)
     @players.find { |player| player.id == player_id }
+  end
+
+  def find_cards_rank
+    cards_rank = {}
+
+    @played_cards.map do |player_id, cards|
+      cards.each do |card|
+        cards_rank[player_id] = @card_set.find_index(card) + 2
+      end
+    end
+
+    cards_rank
   end
 end

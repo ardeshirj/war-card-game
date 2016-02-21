@@ -6,7 +6,7 @@ match = Match.new(2)
 until match.over?
   puts 'Match not over yet'
 
-  match.battel
+  match.player_draw_card(1)
   match.update_winner_cards
 
   exit
