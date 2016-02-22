@@ -11,7 +11,7 @@ class Match
     @card_set = ('2'..'10').to_a + %w(J Q K A)
     @cards = @card_set.product(suits).map { |c, _s| c.to_s }
     @players = setup_players(player_count)
-    @pile = Hash.new { |hash, key| hash[key] = [] }
+    @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
 
   def players_draw_cards(card_count)
@@ -19,12 +19,14 @@ class Match
       player_cards = player.draw_cards(card_count)
 
       puts "player #{player.id}: #{player_cards}"
-      player_cards.each { |player_card| @pile[player.id] << player_card }
+      player_cards.each do |player_card|
+        @played_cards[player.id] << player_card
+      end
     end
   end
 
   def update_winner_cards
-    won_cards = lost_players_cards
+    pile = find_lost_players_cards
 
     cards_rank = find_cards_rank
     puts "Ranks #{cards_rank}"
@@ -33,11 +35,11 @@ class Match
 
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     winner = find_player(winner_card[0])
-    winner.add_cards(@pile.values.flatten + won_cards)
+    winner.add_cards(@played_cards.values.flatten + pile)
 
     # puts "Winner: player-#{winner.id}"
-    # puts @pile
-    @pile.clear
+    # puts @played_cards
+    @played_cards.clear
   end
 
   def status
@@ -48,7 +50,7 @@ class Match
 
   def war?
     last_played_cards = []
-    @pile.values.each { |cards| last_played_cards << cards.last }
+    @played_cards.values.each { |cards| last_played_cards << cards.last }
 
     equal_cards = last_played_cards.detect do |card|
       last_played_cards.count(card) > 1
@@ -81,7 +83,7 @@ class Match
 
   def find_cards_rank
     cards_rank = {}
-    @pile.each do |player_id, cards|
+    @played_cards.each do |player_id, cards|
       cards_rank[player_id] = @card_set.find_index(cards.last) + 2
     end
     cards_rank
@@ -89,20 +91,20 @@ class Match
 
   def find_lost_players
     lost_players = []
-    @pile.each do |player_id, cards|
+    @played_cards.each do |player_id, cards|
       lost_players << player_id if cards.include?(nil)
     end
     lost_players
   end
 
-  def lost_players_cards
+  def find_lost_players_cards
     lost_players = find_lost_players
     lost_player_cards = []
 
     lost_players.each do |player_id|
-      lost_player_cards += @pile[player_id].compact
+      lost_player_cards += @played_cards[player_id].compact
       @players.delete_if { |player| player.id == player_id }
-      @pile.delete(player_id)
+      @played_cards.delete(player_id)
     end
 
     lost_player_cards
