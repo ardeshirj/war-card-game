@@ -12,7 +12,9 @@ class Player
     @cards.unshift(*cards)
   end
 
-  def draw_cards(n)
-    @cards.pop(n)
+  def draw_cards(card_count)
+    poped = []
+    (1..card_count).each { poped << @cards.pop }
+    poped
   end
 end
