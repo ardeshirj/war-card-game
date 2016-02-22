@@ -24,23 +24,20 @@ class Match
   end
 
   def update_winner_cards
-    return if @pile.size == 1
-
     won_cards = lost_players_cards
-    cards_rank = find_cards_rank
-    # puts "Ranks #{cards_rank}"
 
-    winner_player_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
-    winner = find_player(winner_player_card[0])
+    cards_rank = find_cards_rank
+    puts "Ranks #{cards_rank}"
+
+    return if cards_rank.empty?
+
+    winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
+    winner = find_player(winner_card[0])
     winner.add_cards(@pile.values.flatten + won_cards)
 
     # puts "Winner: player-#{winner.id}"
     # puts @pile
     @pile.clear
-  end
-
-  def remove_no_cards_player
-    @players.delete_if { |player| player.cards.empty? }
   end
 
   def status
@@ -50,15 +47,18 @@ class Match
   end
 
   def war?
-    return false if @pile.size == 1
-    equal_cards = @pile.values.detect do |card|
-      @pile.values.count(card) > 1
+    last_played_cards = []
+    @pile.values.each { |cards| last_played_cards << cards.last }
+
+    equal_cards = last_played_cards.detect do |card|
+      last_played_cards.count(card) > 1
     end
-    equal_cards ? (return true) : (return false)
+
+    equal_cards.nil? ? false : true
   end
 
   def over?
-    return true if @players.size == 1
+    return true if @players.size <= 1
     winner = @players.detect { |player| player.cards.size == @cards.size }
     winner.nil? ? false : true
   end
