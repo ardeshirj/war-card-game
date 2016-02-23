@@ -1,4 +1,4 @@
-# War game cards
+# War card game
 
 Following the rules explained [here](https://www.pagat.com/war/war.html)
 
