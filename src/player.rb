@@ -1,7 +1,7 @@
 # Holds information about player's cards and id
 class Player
-  attr_accessor :id
-  attr_accessor :cards
+  attr_reader :id
+  attr_reader :cards
 
   def initialize(id, cards)
     @id = id
