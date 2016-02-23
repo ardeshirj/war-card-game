@@ -42,12 +42,6 @@ class Match
     return "Player #{winner_player.id} won" unless winner_player.nil?
   end
 
-  def draw?
-    # If all players did NOT have a card to play then it is draw
-    no_card_players = @played_cards.values.select { |cards| cards.last.nil? }
-    return true if no_card_players.size == @players.size
-  end
-
   def update_winner_cards(cards_rank)
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     winner = find_player(winner_card[0])
@@ -67,6 +61,12 @@ class Match
         @players.delete(lost_player)
       end
     end
+  end
+
+  def draw?
+    # If all players did NOT have a card to play then it is draw
+    no_card_players = @played_cards.values.select { |cards| cards.last.nil? }
+    return true if no_card_players.size == @players.size
   end
 
   def war?
