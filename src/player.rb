@@ -17,4 +17,8 @@ class Player
     (1..card_count).each { poped << @cards.pop }
     poped
   end
+
+  def ==(other)
+    @id == other.id
+  end
 end

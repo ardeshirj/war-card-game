@@ -4,11 +4,23 @@ require_relative './player.rb'
 match = Match.new(2)
 
 until match.over?
-  match.players_draw_cards(1)
-  match.players_draw_cards(2) while match.war?
-  match.update_winner_cards
 
-  match.status
+  puts '---Battel---'
+  match.players_draw_cards(1)
+
+  while match.war?
+    puts 'Result: WAR'
+    puts '---End------'
+
+    puts
+
+    puts '---WAR---'
+    match.players_draw_cards(2)
+  end
+
+  puts "Result: #{match.update}"
+  puts '---End---'
   puts
-  # sleep(1)
+
+  sleep(1)
 end

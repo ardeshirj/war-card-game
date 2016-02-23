@@ -15,36 +15,57 @@ class Match
   end
 
   def players_draw_cards(card_count)
-    @players.each do |player|
-      player_cards = player.draw_cards(card_count)
+    draw_war_cards = true if card_count == 2
 
-      puts "player #{player.id}: #{player_cards}"
-      player_cards.each do |player_card|
-        @played_cards[player.id] << player_card
+    @players.each do |player|
+      played_cards = player.draw_cards(card_count)
+
+      show_status(player, played_cards, draw_war_cards)
+
+      played_cards.each do |played_card|
+        @played_cards[player.id] << played_card
       end
     end
   end
 
-  def update_winner_cards
-    pile = find_lost_players_cards
+  def update
+    if draw?
+      draw_players = @players.map(&:id)
+      return "Draw! - following players: #{draw_players}"
+    end
 
     cards_rank = find_cards_rank
-    puts "Ranks #{cards_rank}"
 
-    return if cards_rank.empty?
+    winner_player = update_winner_cards(cards_rank)
+    delete_lost_players(cards_rank)
 
-    winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
-    winner = find_player(winner_card[0])
-    winner.add_cards(@played_cards.values.flatten + pile)
-
-    # puts "Winner: player-#{winner.id}"
-    # puts @played_cards
-    @played_cards.clear
+    return "Player #{winner_player.id} won" unless winner_player.nil?
   end
 
-  def status
-    @players.each do |player|
-      puts "Player[#{player.id}]: #{player.cards}"
+  def draw?
+    # If all players did NOT have a card to play then it is draw
+    no_card_players = @played_cards.values.select { |cards| cards.last.nil? }
+    return true if no_card_players.size == @players.size
+  end
+
+  def update_winner_cards(cards_rank)
+    winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
+    winner = find_player(winner_card[0])
+    winner.add_cards(@played_cards.values.flatten)
+
+    @played_cards.clear
+
+    winner
+  end
+
+  def delete_lost_players(cards_rank)
+    # Remove the lost players (player with card_rank = 0)
+    lost_player = nil
+    cards_rank.each do |player_id, card_rank|
+      if card_rank == 0
+        lost_player = find_player(player_id)
+        @players.delete(lost_player)
+      end
     end
   end
 
@@ -60,9 +81,18 @@ class Match
   end
 
   def over?
-    return true if @players.size <= 1
     winner = @players.detect { |player| player.cards.size == @cards.size }
-    winner.nil? ? false : true
+    unless winner.nil?
+      puts "Player #{winner.id} won the game"
+      return true
+    end
+
+    if @players.size == 1
+      puts "Player #{@players.first.id} won the game"
+      return true
+    end
+
+    return true if draw?
   end
 
   private
@@ -84,29 +114,23 @@ class Match
   def find_cards_rank
     cards_rank = {}
     @played_cards.each do |player_id, cards|
-      cards_rank[player_id] = @card_set.find_index(cards.last) + 2
+      rank = 0
+      rank = @card_set.find_index(cards.last) + 2 unless cards.last.nil?
+      cards_rank[player_id] = rank
     end
     cards_rank
   end
 
-  def find_lost_players
-    lost_players = []
-    @played_cards.each do |player_id, cards|
-      lost_players << player_id if cards.include?(nil)
+  def show_status(player, played_cards, draw_war_cards)
+    print "Player[#{player.id}] (##{player.cards.size} cards):"
+    if draw_war_cards
+      war_cards = []
+      played_cards.each_index do |index|
+        index.even? ? war_cards << 'X' : war_cards << played_cards[index]
+      end
+      puts "#{war_cards}"
+    else
+      puts "#{played_cards}"
     end
-    lost_players
-  end
-
-  def find_lost_players_cards
-    lost_players = find_lost_players
-    lost_player_cards = []
-
-    lost_players.each do |player_id|
-      lost_player_cards += @played_cards[player_id].compact
-      @players.delete_if { |player| player.id == player_id }
-      @played_cards.delete(player_id)
-    end
-
-    lost_player_cards
   end
 end
