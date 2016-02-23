@@ -39,7 +39,7 @@ class Match
       return "Draw! - following players: #{draw_players}"
     end
 
-    cards_rank = find_cards_rank
+    cards_rank = find_played_cards_rank
 
     winner_player = update_winner_cards(cards_rank)
     delete_lost_players(cards_rank)
@@ -110,7 +110,7 @@ class Match
     @players.find { |player| player.id == player_id }
   end
 
-  def find_cards_rank
+  def find_played_cards_rank
     cards_rank = {}
     @played_cards.each do |player_id, cards|
       rank = 0
