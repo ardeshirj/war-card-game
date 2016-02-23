@@ -45,7 +45,7 @@ class Match
   def update_winner_cards(cards_rank)
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
     winner = find_player(winner_card[0])
-    winner.add_cards(@played_cards.values.flatten)
+    winner.add_cards(@played_cards.values.flatten.compact)
 
     @played_cards.clear
 
@@ -81,12 +81,6 @@ class Match
   end
 
   def over?
-    winner = @players.detect { |player| player.cards.size == @cards.size }
-    unless winner.nil?
-      puts "Player #{winner.id} won the game"
-      return true
-    end
-
     if @players.size == 1
       puts "Player #{@players.first.id} won the game"
       return true
@@ -132,5 +126,6 @@ class Match
     else
       puts "#{played_cards}"
     end
+    # p player.cards
   end
 end

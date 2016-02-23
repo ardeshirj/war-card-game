@@ -1,7 +1,7 @@
 require_relative './match.rb'
 require_relative './player.rb'
 
-match = Match.new(2)
+match = Match.new(4)
 
 until match.over?
 
