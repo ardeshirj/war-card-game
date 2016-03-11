@@ -20,9 +20,15 @@ class Card
     @cards.pop(count)
   end
 
-  def self.rank(cards)
-    return 0 if cards.last.nil?
+  def self.rank(played_cards)
+    cards_rank = {}
     card_set = ('2'..'10').to_a + %w(J Q K A)
-    card_set.find_index(cards.last) + 2
+
+    played_cards.each do |player_id, cards|
+      rank = 0
+      rank = card_set.find_index(cards.last) + 2 unless cards.last.nil?
+      cards_rank[player_id] = rank
+    end
+    cards_rank
   end
 end

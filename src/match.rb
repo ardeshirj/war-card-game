@@ -34,8 +34,7 @@ class Match
       return "Draw! - following players: #{draw_players}"
     end
 
-    cards_rank = played_cards_rank
-
+    cards_rank = Card.rank(@played_cards)
     winner_player = update_winner_cards(cards_rank)
     Player.delete_lost_players(@players, cards_rank)
 
@@ -85,15 +84,6 @@ class Match
       puts "#{played_cards}"
     end
     # p player.cards
-  end
-
-  def played_cards_rank
-    cards_rank = {}
-    @played_cards.each do |player_id, played_cards|
-      rank = Card.rank(played_cards)
-      cards_rank[player_id] = rank
-    end
-    cards_rank
   end
 
   def update_winner_cards(cards_rank)
