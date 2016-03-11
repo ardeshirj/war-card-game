@@ -1,4 +1,5 @@
 require_relative './player.rb'
+require_relative './card.rb'
 
 # Hold information about the players and cards
 class Match
@@ -8,14 +9,8 @@ class Match
   attr_reader :cards
 
   def initialize(player_count)
-    # (clubs, hearts, spades, diamonds)
-    # [2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A]
-
-    suits = %w(c h s d)
-    @card_set = ('2'..'10').to_a + %w(J Q K A)
-    @cards = @card_set.product(suits).map { |c, _s| c.to_s }
-
     @players = setup_players(player_count)
+    @match_cards = Card.new
     @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
 
@@ -70,11 +65,10 @@ class Match
   private
 
   def setup_players(player_counts)
-    game_cards = @cards.shuffle
-    cards_count = game_cards.size
+    player_card_count = @match_cards.size / player_counts
 
     (1..player_counts).map do |player_count|
-      player_cards = game_cards.pop(cards_count / player_counts)
+      player_cards = @match_cards.pass_card(player_card_count)
       Player.new(player_count, player_cards)
     end
   end
@@ -95,9 +89,8 @@ class Match
 
   def played_cards_rank
     cards_rank = {}
-    @played_cards.each do |player_id, cards|
-      rank = 0
-      rank = @card_set.find_index(cards.last) + 2 unless cards.last.nil?
+    @played_cards.each do |player_id, played_cards|
+      rank = Card.rank(played_cards)
       cards_rank[player_id] = rank
     end
     cards_rank
