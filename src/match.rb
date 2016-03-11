@@ -3,13 +3,12 @@ require_relative './card.rb'
 
 # Hold information about the players and cards
 class Match
+  attr_reader :match_cards
   attr_reader :players
   attr_reader :played_cards
-  attr_reader :card_set
-  attr_reader :cards
 
-  def initialize(player_count)
-    @match_cards = Card.new
+  def initialize(player_count, shuffle = true)
+    @match_cards = Card.new(shuffle)
     @players = setup_players(player_count)
     @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
