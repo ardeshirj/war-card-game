@@ -9,8 +9,8 @@ class Match
   attr_reader :cards
 
   def initialize(player_count)
-    @players = setup_players(player_count)
     @match_cards = Card.new
+    @players = setup_players(player_count)
     @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
 
