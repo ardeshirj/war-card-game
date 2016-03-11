@@ -1,6 +1,6 @@
 # Hold information about the game cards
 class Card
-  attr_reader :cards
+  attr_reader :deck
 
   def initialize(shuffle = true)
     # (clubs, hearts, spades, diamonds)
@@ -8,16 +8,16 @@ class Card
 
     suits = %w(c h s d)
     card_set = ('2'..'10').to_a + %w(J Q K A)
-    @cards = card_set.product(suits).map { |c, _s| c.to_s }
-    @cards.shuffle! if shuffle
+    @deck = card_set.product(suits).map { |c, _s| c.to_s }
+    @deck.shuffle! if shuffle
   end
 
   def size
-    @cards.size
+    @deck.size
   end
 
   def pass_card(count)
-    @cards.pop(count)
+    @deck.pop(count)
   end
 
   def self.rank(played_cards)
