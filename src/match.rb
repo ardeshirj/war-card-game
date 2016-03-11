@@ -1,4 +1,5 @@
 require_relative './player.rb'
+require_relative './card.rb'
 
 # Hold information about the players and cards
 class Match
@@ -8,13 +9,7 @@ class Match
   attr_reader :cards
 
   def initialize(player_count)
-    # (clubs, hearts, spades, diamonds)
-    # [2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, A]
-
-    suits = %w(c h s d)
-    @card_set = ('2'..'10').to_a + %w(J Q K A)
-    @cards = @card_set.product(suits).map { |c, _s| c.to_s }
-
+    @match_cards = Card.new
     @players = setup_players(player_count)
     @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
@@ -25,7 +20,7 @@ class Match
     @players.each do |player|
       played_cards = player.draw_cards(card_count)
 
-      show_status(player, played_cards, draw_war_cards)
+      Card.show_played_cards(player, played_cards, draw_war_cards)
 
       played_cards.each do |played_card|
         @played_cards[player.id] << played_card
@@ -39,10 +34,9 @@ class Match
       return "Draw! - following players: #{draw_players}"
     end
 
-    cards_rank = played_cards_rank
-
+    cards_rank = Card.rank(@played_cards)
     winner_player = update_winner_cards(cards_rank)
-    delete_lost_players(cards_rank)
+    Player.delete_lost_players(@players, cards_rank)
 
     return "Player #{winner_player.id} won" unless winner_player.nil?
   end
@@ -70,62 +64,22 @@ class Match
   private
 
   def setup_players(player_counts)
-    game_cards = @cards.shuffle
-    cards_count = game_cards.size
+    player_card_count = @match_cards.size / player_counts
 
     (1..player_counts).map do |player_count|
-      player_cards = game_cards.pop(cards_count / player_counts)
+      player_cards = @match_cards.pass_card(player_card_count)
       Player.new(player_count, player_cards)
     end
   end
 
-  def show_status(player, played_cards, draw_war_cards)
-    print "Player[#{player.id}] (##{player.cards.size} cards):"
-    if draw_war_cards
-      war_cards = []
-      played_cards.each_index do |index|
-        index.even? ? war_cards << 'X' : war_cards << played_cards[index]
-      end
-      puts "#{war_cards}"
-    else
-      puts "#{played_cards}"
-    end
-    # p player.cards
-  end
-
-  def played_cards_rank
-    cards_rank = {}
-    @played_cards.each do |player_id, cards|
-      rank = 0
-      rank = @card_set.find_index(cards.last) + 2 unless cards.last.nil?
-      cards_rank[player_id] = rank
-    end
-    cards_rank
-  end
-
   def update_winner_cards(cards_rank)
     winner_card = cards_rank.max_by { |_player_id, card_rank| card_rank }
-    winner = find_player(winner_card[0])
+    winner = Player.find_player(@players, winner_card[0])
     winner.add_cards(@played_cards.values.flatten.compact)
 
     @played_cards.clear
 
     winner
-  end
-
-  def delete_lost_players(cards_rank)
-    # Remove the lost players (player with card_rank = 0)
-    lost_player = nil
-    cards_rank.each do |player_id, card_rank|
-      if card_rank == 0
-        lost_player = find_player(player_id)
-        @players.delete(lost_player)
-      end
-    end
-  end
-
-  def find_player(player_id)
-    @players.find { |player| player.id == player_id }
   end
 
   def draw?
