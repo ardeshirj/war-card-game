@@ -29,18 +29,18 @@ RSpec.describe Card do
 
   describe '.show_played_cards' do
     player = Player.new(1, %w(A 10 6))
-    played_cards = %w(4 5 10)
+    played_cards = %w(A 5 10)
 
-    draw_war_cards = 1
     specify do
       expect do
+        draw_war_cards = true
         Card.show_played_cards(player, played_cards, draw_war_cards)
       end.to output.to_stdout
     end
 
-    draw_war_cards = 2
     specify do
       expect do
+        draw_war_cards = false
         Card.show_played_cards(player, played_cards, draw_war_cards)
       end.to output.to_stdout
     end
