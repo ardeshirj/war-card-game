@@ -20,7 +20,7 @@ class Match
     @players.each do |player|
       played_cards = player.draw_cards(card_count)
 
-      show_status(player, played_cards, draw_war_cards)
+      Card.show_played_cards(player, played_cards, draw_war_cards)
 
       played_cards.each do |played_card|
         @played_cards[player.id] << played_card
@@ -70,20 +70,6 @@ class Match
       player_cards = @match_cards.pass_card(player_card_count)
       Player.new(player_count, player_cards)
     end
-  end
-
-  def show_status(player, played_cards, draw_war_cards)
-    print "Player[#{player.id}] (##{player.cards.size} cards):"
-    if draw_war_cards
-      war_cards = []
-      played_cards.each_index do |index|
-        index.even? ? war_cards << 'X' : war_cards << played_cards[index]
-      end
-      puts "#{war_cards}"
-    else
-      puts "#{played_cards}"
-    end
-    # p player.cards
   end
 
   def update_winner_cards(cards_rank)

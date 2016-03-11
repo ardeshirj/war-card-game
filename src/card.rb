@@ -31,4 +31,18 @@ class Card
     end
     cards_rank
   end
+
+  def self.show_played_cards(player, played_cards, draw_war_cards)
+    print "Player[#{player.id}] (##{player.cards.size} cards):"
+    if draw_war_cards
+      war_cards = []
+      played_cards.each_index do |index|
+        index.even? ? war_cards << 'X' : war_cards << played_cards[index]
+      end
+      puts "#{war_cards}"
+    else
+      puts "#{played_cards}"
+    end
+    # p player.cards
+  end
 end
