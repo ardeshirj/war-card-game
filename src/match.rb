@@ -3,12 +3,12 @@ require_relative './card.rb'
 
 # Hold information about the players and cards
 class Match
-  attr_reader :match_cards
+  attr_reader :cards
   attr_reader :players
   attr_reader :played_cards
 
   def initialize(player_count, shuffle = true)
-    @match_cards = Card.new(shuffle)
+    @cards = Card.new(shuffle)
     @players = setup_players(player_count)
     @played_cards = Hash.new { |hash, key| hash[key] = [] }
   end
@@ -63,10 +63,10 @@ class Match
   private
 
   def setup_players(player_counts)
-    player_card_count = @match_cards.size / player_counts
+    player_card_count = @cards.size / player_counts
 
     (1..player_counts).map do |player_count|
-      player_cards = @match_cards.pass_card(player_card_count)
+      player_cards = @cards.pass_card(player_card_count)
       Player.new(player_count, player_cards)
     end
   end
