@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Card do
   before :all do
+    @match = Match.new(2)
     shuffle = false
     @cards = Card.new(shuffle)
   end
@@ -34,21 +35,16 @@ RSpec.describe Card do
     end
   end
 
-  describe '.show_played_cards' do
-    player = Player.new(1, %w(A 10 6))
-    played_cards = %w(A 5 10)
-
+  describe '.show_last_played_cards' do
     specify do
       expect do
-        draw_war_cards = true
-        Card.show_played_cards(player, played_cards, draw_war_cards)
+        Card.show_last_played_cards(@match, false)
       end.to output.to_stdout
     end
 
     specify do
       expect do
-        draw_war_cards = false
-        Card.show_played_cards(player, played_cards, draw_war_cards)
+        Card.show_last_played_cards(@match, true)
       end.to output.to_stdout
     end
   end

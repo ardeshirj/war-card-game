@@ -14,15 +14,10 @@ class Match
   end
 
   def players_draw_cards(card_count)
-    draw_war_cards = true if card_count == 2
-
     @players.each do |player|
       played_cards = player.draw_cards(card_count)
-
-      Card.show_played_cards(player, played_cards, draw_war_cards)
-
-      played_cards.each do |played_card|
-        @played_cards[player.id] << played_card
+      played_cards.each do |cards|
+        @played_cards[player.id] << cards
       end
     end
   end

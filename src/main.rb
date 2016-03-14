@@ -1,5 +1,6 @@
 require_relative './match.rb'
 require_relative './player.rb'
+require_relative './card.rb'
 
 if ARGV.empty? || ARGV.size < 1
   puts 'Usage: main.rb number_of_players'
@@ -19,6 +20,7 @@ until match.over?
 
   puts '---Battel---'
   match.players_draw_cards(1)
+  Card.show_last_played_cards(match, false)
 
   while match.war?
     puts 'Result: WAR'
@@ -28,6 +30,7 @@ until match.over?
 
     puts '---WAR---'
     match.players_draw_cards(2)
+    Card.show_last_played_cards(match, true)
   end
 
   puts "Result: #{match.update}"

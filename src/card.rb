@@ -36,16 +36,11 @@ class Card
     ('2'..'10').to_a + %w(J Q K A)
   end
 
-  def self.show_played_cards(player, played_cards, draw_war_cards)
-    print "Player[#{player.id}] (##{player.cards.size} cards):"
-    if draw_war_cards
-      war_cards = []
-      played_cards.each_index do |index|
-        index.even? ? war_cards << 'X' : war_cards << played_cards[index]
-      end
-      puts "#{war_cards}"
-    else
-      puts "#{played_cards}"
+  def self.show_last_played_cards(match, war_cards)
+    match.players.each do |player|
+      print "Player[#{player.id}] (#{player.cards.size} cards): "
+      print 'X ' if war_cards
+      puts match.played_cards[player.id].last
     end
     # p player.cards
   end
