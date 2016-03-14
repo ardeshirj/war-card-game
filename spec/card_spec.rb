@@ -27,6 +27,13 @@ RSpec.describe Card do
     end
   end
 
+  describe '.get_card_set' do
+    it 'should return a card set from 2 - A' do
+      expected = %w(2 3 4 5 6 7 8 9 10 J Q K A)
+      expect(Card.gen_card_set).to eq(expected)
+    end
+  end
+
   describe '.show_played_cards' do
     player = Player.new(1, %w(A 10 6))
     played_cards = %w(A 5 10)
