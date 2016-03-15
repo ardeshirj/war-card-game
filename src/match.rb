@@ -4,8 +4,8 @@ require_relative './card.rb'
 # Hold information about the players and cards
 class Match
   attr_reader :cards
-  attr_reader :players
-  attr_reader :played_cards
+  attr_accessor :played_cards
+  attr_accessor :players
 
   def initialize(player_count, shuffle = true)
     @cards = Card.new(shuffle)
@@ -47,12 +47,7 @@ class Match
   end
 
   def over?
-    if @players.size == 1
-      puts "Player #{@players.first.id} won the game"
-      return true
-    end
-
-    return true if draw?
+    return true if @players.size == 1 || draw?
   end
 
   private
@@ -80,5 +75,10 @@ class Match
     # If all players did NOT have a card to play then it is draw
     no_card_players = @played_cards.values.select { |cards| cards.last.nil? }
     return true if no_card_players.size == @players.size
+  end
+
+  def show_the_winner
+    puts 'The game is still in progress..' unless @match.over?
+    puts @players.last
   end
 end

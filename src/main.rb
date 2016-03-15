@@ -39,3 +39,5 @@ until match.over?
 
   sleep(1)
 end
+
+match.show_the_winner
