@@ -20,4 +20,5 @@ ruby src/main.rb number_of_players
 Run spec files
 ```shell
 rspec spec/
+# checkout the report at `coverage/index.html`
 ```
