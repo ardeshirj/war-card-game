@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'player'
 
 RSpec.describe Player do
   before :all do

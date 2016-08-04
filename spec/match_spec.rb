@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'match'
 
 RSpec.describe Match do
   before :each do

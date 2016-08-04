@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'card'
 
 RSpec.describe Card do
   before :all do
