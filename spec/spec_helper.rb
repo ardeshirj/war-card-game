@@ -18,7 +18,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 # SimpleCov
-require 'SimpleCov'
+require 'simplecov'
 SimpleCov.start
 
 RSpec.configure do |config|
